@@ -46,6 +46,12 @@ def is_right_click(landmarks_list,thumb_index_dist):
         thumb_index_dist > 50 
     )
 
+def is_double_click(landmarks_list,thumb_index_dist):
+    return (
+            util.get_angle(landmarks_list[5], landmarks_list[6], landmarks_list[8]) < 50 and
+            util.get_angle(landmarks_list[9], landmarks_list[10], landmarks_list[12]) < 50 and
+            thumb_index_dist > 50
+    )
 
 def detect_gesture(frame, landmarks_list, processed):
     # mediapipe hands detect 21 gestures
@@ -64,6 +70,9 @@ def detect_gesture(frame, landmarks_list, processed):
             mouse.press(Button.right)
             mouse.release(Button.right)
             cv2.putText(frame, "Right Click", (100, 100), cv2.FONT_HERSHEY_SIMPLEX, 1, (0,0,255), 3)
+        elif is_double_click(landmarks_list , thumb_index_dist):
+            pyautogui.doubleClick()
+            cv2.putText(frame, "Double Click", (50, 50), cv2.FONT_HERSHEY_SIMPLEX, 1, (255, 255, 0),3)
 def main():
     # Setting up the camera to capture video
     cap = cv2.VideoCapture(0)
