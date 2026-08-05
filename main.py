@@ -2,7 +2,9 @@ import cv2
 import mediapipe as mp
 import util 
 import pyautogui
+from pynput.mouse import Button, Controller
 
+mouse = Controller()
 screen_width,screen_height = pyautogui.size()
 mpHands = mp.solutions.hands
 hands = mpHands.Hands(
@@ -30,14 +32,27 @@ def move_mouse(index_finger_tip):
         y = int(index_finger_tip.y * screen_height)
         pyautogui.moveTo(x,y)
 
+def is_left_click(landmarks_list,thumb_index_dist):
+    return (
+        util.get_angle(landmarks_list[5],landmarks_list[6],landmarks_list[8]) < 50 and 
+        util.get_angle(landmarks_list[9],landmarks_list[10],landmarks_list[12]) > 90 and 
+        thumb_index_dist > 50 
+    )
+
+
 def detect_gesture(frame, landmarks_list, processed):
     # mediapipe hands detect 21 gestures
     if len(landmarks_list) >=21:
         index_finger_tip = find_finger_tip(processed)
         thumb_index_dist = util.get_distance([landmarks_list[4],landmarks_list[5]])
-
+        # Cursor Movement
         if thumb_index_dist < 50 and util.get_angle(landmarks_list[5],landmarks_list[6],landmarks_list[8]) > 90:
             move_mouse(index_finger_tip)
+        # Left Click
+        elif is_left_click(landmarks_list , thumb_index_dist): 
+            mouse.press(Button.left)
+            mouse.release(Button.left)
+            cv2.putText(frame, "Left Click", (50, 50), cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 255, 0), 2)
 def main():
     # Setting up the camera to capture video
     cap = cv2.VideoCapture(0)
