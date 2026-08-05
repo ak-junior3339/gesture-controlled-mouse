@@ -1,6 +1,9 @@
 import cv2
 import mediapipe as mp
+import util 
+import pyautogui
 
+screen_width,screen_height = pyautogui.size()
 mpHands = mp.solutions.hands
 hands = mpHands.Hands(
     # we are capturing video so no static 
@@ -13,6 +16,28 @@ hands = mpHands.Hands(
     #Max number of hands
     max_num_hands = 1
 )
+
+def find_finger_tip(processed):
+    if processed.multi_hand_landmarks:
+        hand_landmarks = processed.multi_hand_landmarks[0]
+        # WE WILL RETURN THE ATTRIBUTE OF INDEX FINGER TIP WHIC CAN BE ACESSED DIRECTLY USING 
+        # 'mpHands.HandLandmark.INDEX_FINGER_TIP'
+        return hand_landmarks.landmark[mpHands.HandLandmark.INDEX_FINGER_TIP]
+
+def move_mouse(index_finger_tip):
+    if index_finger_tip is not None :
+        x = int(index_finger_tip.x * screen_width)
+        y = int(index_finger_tip.y * screen_height)
+        pyautogui.moveTo(x,y)
+
+def detect_gesture(frame, landmarks_list, processed):
+    # mediapipe hands detect 21 gestures
+    if len(landmarks_list) >=21:
+        index_finger_tip = find_finger_tip(processed)
+        thumb_index_dist = util.get_distance([landmarks_list[4],landmarks_list[5]])
+
+        if thumb_index_dist < 50 and util.get_angle(landmarks_list[5],landmarks_list[6],landmarks_list[8]) > 90:
+            move_mouse(index_finger_tip)
 def main():
     # Setting up the camera to capture video
     cap = cv2.VideoCapture(0)
@@ -27,7 +52,7 @@ def main():
             # Flipping the image for mirror image so that right <-> left dosent get interchanged
             frame = cv2.flip(frame,1)
             # Open cv captures the frame by default in BGR format but to process 
-            #it by mrdiapipr we need to convert it to RGB format 
+            # it by mediapipe we need to convert it to RGB format 
             frameRGB = cv2.cvtColor(frame,cv2.COLOR_BGR2RGB)
             # Now processing the RGB frame to detect all the 21 landmarks from frame
             processed = hands.process(frameRGB)
@@ -37,6 +62,9 @@ def main():
                 hand_landmarks = processed.multi_hand_landmarks[0]
                 # Drawing the Hand Landmarks with connections in thr open CV's BGR frame
                 draw.draw_landmarks(frame,hand_landmarks,mpHands.HAND_CONNECTIONS)
+                for lm in hand_landmarks.landmark:
+                    landmarks_list.append((lm.x,lm.y))
+            detect_gesture(frame, landmarks_list, processed)
             # Showing the frame on screen 
             cv2.imshow('Frame',frame)
             # Code for waiting 1 ms and if q is pressed then quit
