@@ -14,7 +14,6 @@ Control your computer mouse using just your hand! This project uses **OpenCV**, 
 - Real-time gesture recognition
 - Webcam-based interaction (No additional hardware required)
 - More can be added as well 
-
 ---
 
 ## Tech Stack
@@ -42,7 +41,7 @@ Virtual-Mouse/
 
 ---
 
-## 📌 How It Works
+## How It Works
 
 1. The webcam captures live video.
 2. MediaPipe detects **21 hand landmarks**.
@@ -54,7 +53,7 @@ Virtual-Mouse/
 
 ---
 
-## ✋ Supported Gestures
+## Supported Gestures
 
 | Gesture | Action |
 |----------|--------|
@@ -68,7 +67,7 @@ Virtual-Mouse/
 
 ---
 
-## 🧠 Gesture Detection Logic
+## Gesture Detection Logic
 
 The project detects gestures by computing:
 
@@ -87,7 +86,7 @@ These values are used to determine which gesture is currently being performed.
 
 ---
 
-## 📦 Installation
+## Installation
 
 ### Clone the repository
 
@@ -105,7 +104,7 @@ pip install -r requirements.txt
 
 ---
 
-## ▶️ Run the Project
+## ▶ Run the Project
 
 ```bash
 python main.py
@@ -115,7 +114,7 @@ Press **Q** to quit.
 
 ---
 
-## 📚 Required Libraries
+## Required Libraries
 
 ```text
 opencv-python
@@ -133,7 +132,7 @@ pip install opencv-python mediapipe numpy pyautogui pynput
 
 ---
 
-## 🎯 Future Improvements
+## Future Improvements
 
 - Smooth cursor movement using interpolation
 - Drag and Drop gesture
@@ -146,7 +145,7 @@ pip install opencv-python mediapipe numpy pyautogui pynput
 
 ---
 
-## 🤝 Contributing
+## Contributing
 
 Contributions are welcome!
 
@@ -173,13 +172,13 @@ git push origin feature-name
 
 ---
 
-## ⭐ If you like this project
+## If you like this project
 
 Give this repository a ⭐ on GitHub. It helps others discover the project and motivates further development!
 
 ---
 
-## 👨‍💻 Author
+##  Author
 
 **Aishwarya Kumar Singh**
 
