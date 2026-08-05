@@ -3,6 +3,7 @@ import mediapipe as mp
 import util 
 import pyautogui
 from pynput.mouse import Button, Controller
+import random
 
 mouse = Controller()
 screen_width,screen_height = pyautogui.size()
@@ -52,6 +53,14 @@ def is_double_click(landmarks_list,thumb_index_dist):
             util.get_angle(landmarks_list[9], landmarks_list[10], landmarks_list[12]) < 50 and
             thumb_index_dist > 50
     )
+def is_screenshot(landmarks_list,thumb_index_dist):
+    return (
+            util.get_angle(landmarks_list[5], landmarks_list[6], landmarks_list[8]) > 90 and
+            util.get_angle(landmarks_list[9], landmarks_list[10], landmarks_list[12]) > 90 and
+            util.get_angle(landmarks_list[13], landmarks_list[14], landmarks_list[16]) > 90  and 
+            util.get_angle(landmarks_list[17], landmarks_list[18], landmarks_list[20]) > 90 and 
+            thumb_index_dist > 150
+    )
 
 def detect_gesture(frame, landmarks_list, processed):
     # mediapipe hands detect 21 gestures
@@ -73,6 +82,12 @@ def detect_gesture(frame, landmarks_list, processed):
         elif is_double_click(landmarks_list , thumb_index_dist):
             pyautogui.doubleClick()
             cv2.putText(frame, "Double Click", (50, 50), cv2.FONT_HERSHEY_SIMPLEX, 1, (255, 255, 0),3)
+        elif is_screenshot(landmarks_list,thumb_index_dist ):
+            im1 = pyautogui.screenshot()
+            label = random.randint(1, 1000)
+            im1.save(f'my_screenshot_{label}.png')
+            cv2.putText(frame, "Screenshot Taken", (50, 50), cv2.FONT_HERSHEY_SIMPLEX, 1, (255, 255, 0), 3)
+
 def main():
     # Setting up the camera to capture video
     cap = cv2.VideoCapture(0)
