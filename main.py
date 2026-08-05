@@ -1,5 +1,18 @@
 import cv2
+import mediapipe as mp
 
+mpHands = mp.solutions.hands
+hands = mp.mpHands.Hands(
+    # we are capturing video so no static 
+    static_image_mode = False,
+    model_complexity = 1,
+    # min. confidence score required for detection
+    min_detection_confidence = 0.7,
+    # the next line says that only if you are 70% confident that a hand is hand only then track it 
+    min_tracking_confidence = 0.7,
+    #Max number of hands
+    max_num_hands = 1
+)
 def main():
     # Setting up the camera to capture video
     cap = cv2.VideoCapture(0)
